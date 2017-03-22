@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http.Controllers;
+using System.Web.Mvc;
+using WebPage.Controllers;
+
+namespace WebPage.Models
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	public class UserAuthorizeAttribute : AuthorizeAttribute
+	{
+		/// <summary>
+		/// 模块别名
+		/// </summary>
+		public string ModuleAlias { get; set; }
+		/// <summary>
+		/// 操作类型
+		/// </summary>
+		public string OperateAction { get; set; }
+		/// <summary>
+		/// 基类实例化
+		/// </summary>
+		public BaseController baseController = new BaseController();
+		/// <summary>
+		/// 权限认证
+		/// </summary>
+		/// <param name="filterContext"></param>
+		public override void OnAuthorization(AuthorizationContext filterContext)
+		{
+			if (string.IsNullOrEmpty(this.ModuleAlias))
+			{
+				filterContext.HttpContext.Response.Write("<script>alert('你没有权限执行该操作！');</script>");
+				filterContext.HttpContext.Response.End();
+				filterContext.Result = new EmptyResult();
+				return;
+			}
+			if (this.baseController.CurrentUser == null)
+			{
+				filterContext.HttpContext.Response.Write("<script>alert('登录已过期，请重新登录！');window.top.location='/';</script>");
+				filterContext.HttpContext.Response.End();
+				filterContext.Result = new EmptyResult();
+				return;
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+﻿using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class UserController : Controller
+	{
+		IUserManage UserManage { get; set; }
+		// GET: SysManage/User
+		public ActionResult Index()
+		{
+			return View();
+		}
+	}
+}

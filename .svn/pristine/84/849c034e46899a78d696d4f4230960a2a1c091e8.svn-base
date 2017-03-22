@@ -1,0 +1,68 @@
+﻿using Common;
+using Domain;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class UserController : Controller
+	{
+		// GET: SysManage/User
+		IUserManage UserManage { get; set; }
+		public ActionResult Index()
+		{
+			return View();
+		}
+		/// <summary>
+		/// 数据查询
+		/// </summary>
+		/// <returns></returns>
+		public string GetList()
+		{
+			var entity = this.UserManage.LoadAll(null).Select(p => new
+			{
+				p.Id,
+				p.Name,
+				p.Account,
+				p.Enabled
+			}).ToList();
+			return JsonHelper.Serialize(entity);
+		}
+		/// <summary>
+		/// 编辑或者新增
+		/// </summary>
+		/// <param name="module"></param>
+		public int SaveOrUpdate(SYS_USER module)
+		{
+			if (UserManage.SaveOrUpdate(module))
+				return 1;
+			return 0;
+		}
+		/// <summary>
+		/// 根据id批量删除
+		/// </summary>
+		/// <param name="entityList"></param>
+		/// <returns></returns>
+		[HttpPost]
+		public int Delete(List<SYS_USER> entityList)
+		{
+			var ids = entityList.Select(p => p.Id).ToList();
+			return UserManage.DeleteByIdList(ids);
+		}
+		/// <summary>
+		/// 密码重置
+		/// </summary>
+		/// <param name="entityList"></param>
+		/// <returns></returns>
+		[HttpPost]
+		public int ResetPassword(List<SYS_USER> entityList)
+		{
+			var ids = entityList.Select(p => p.Id).ToList();
+			return UserManage.ResetPassword(ids);
+		}
+	}
+}

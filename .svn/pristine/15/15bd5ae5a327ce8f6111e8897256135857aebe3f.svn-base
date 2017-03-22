@@ -1,0 +1,121 @@
+﻿using Common.Encrypt;
+using Domain;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+
+namespace Service.ServiceImp
+{
+	/// <summary>
+	/// 登录基类 created by Sean 2016-11-29 17:12:34
+	/// </summary>
+	public class UserManage : Repository<SYS_USER>, IUserManage
+	{
+		IUserRoleManage UserRoleManage { get; set; }
+		/// <summary>
+		/// 登录用户新增或者编辑
+		/// </summary>
+		/// <param name="module"></param>
+		/// <returns></returns>
+		public bool SaveOrUpdate(SYS_USER module)
+		{
+			if (module == null)
+				return false;
+			if (module.Id == 0)
+			{
+				module.Password = MD5Helper.MD5EncryptWithMove(ConfigurationManager.AppSettings["DefaultPassword"]);
+				return this.SaveOrUpdate(module, false);
+			}
+			return this.SaveOrUpdate(module, true);
+		}
+		/// <summary>
+		/// 批量添加
+		/// </summary>
+		/// <param name="list"></param>
+		/// <returns></returns>
+		public bool Save(List<SYS_USER> list)
+		{
+			if (list == null || list.Count == 0)
+				return false;
+			using (TransactionScope sc = new TransactionScope())
+			{
+				try
+				{
+					foreach (var item in list)
+					{
+						this.Save(item);
+					}
+					sc.Complete();
+				}
+				catch (Exception e)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		/// <summary>
+		/// 根据id批量删除
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <returns></returns>
+		public int DeleteByIdList(List<int> ids)
+		{
+			if (ids.Count == 0)
+				return 0;
+			return this.Delete(m => ids.Contains(m.Id));
+		}
+		/// <summary>
+		/// 密码批量重置
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <returns></returns>
+		public int ResetPassword(List<int> ids)
+		{
+			if (ids.Count == 0)
+				return 0;
+			var entitys = this.LoadListAll(m => ids.Contains(m.Id));
+			entitys.ForEach(m => m.Password = MD5Helper.MD5EncryptWithMove(ConfigurationManager.AppSettings["DefaultPassword"]));
+			return this.UpdateList(entitys);
+		}
+		/// <summary>
+		/// 判断登陆账户或者密码是否正确
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+		public bool CanUserPass(SYS_USER user)
+		{
+			var entity = this.Get(m => m.Account == user.Account);
+			if (entity == null)
+				return false;
+			if (entity.Password != MD5Helper.MD5EncryptWithMove(user.Password))
+				return false;
+			return true;
+		}
+		/// <summary>
+		/// 查询用户全部信息
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+		public Account GetAccountByUser(SYS_USER user)
+		{
+			if (user == null)
+				return null;
+			return null;
+		}
+		/// <summary>
+		/// 是否是超级管理员
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public bool IsAdmin(int userId)
+		{
+			return this.UserRoleManage.LoadListAll(m => m.UserId == userId).Select(m => m.RoleId == (int)Enum.RoleType.Admin).Count() > 0;
+		}
+	}
+}

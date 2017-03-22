@@ -1,0 +1,27 @@
+﻿using Domain;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class AccountController : Controller
+	{
+		IUserManage UserManage { get; set; }
+		// GET: SysManage/Account
+		public ActionResult Index()
+		{
+			return View();
+		}
+		public ActionResult Login(SYS_USER user)
+		{
+			if (UserManage.CanUserPass(user))
+				return RedirectToAction("../Home");
+			else
+				return Json("账户或者密码错误");
+		}
+	}
+}

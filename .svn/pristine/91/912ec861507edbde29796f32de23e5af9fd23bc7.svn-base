@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+	<description>Spring注入SysService，容器指向本层层封装的接口，舍弃Dao层，减少代码量</description>
+	<!--系统管理begin-->
+	<!--用户管理-->
+	<object id="Service.User" type="Service.ServiceImp.UserManage,Service" singleton="false">
+		<property name="UserRoleManage" ref="Service.UserRole"/>
+		<property name="PermissionManage" ref="Service.Permission"/>
+		<property name="RolePermissionManage" ref="Service.RolePermission"/>
+		<property name="ModuleManage" ref="Service.Module"/>
+	</object>
+	<!--模块管理-->
+	<object id="Service.Module" type="Service.ServiceImp.ModuleManage,Service" singleton="false">
+	</object>
+	<!--权限管理-->
+	<object id="Service.Permission" type="Service.ServiceImp.PermissionManage,Service" singleton="false">
+	</object>
+	<!--角色管理-->
+	<object id="Service.Role" type="Service.ServiceImp.RoleManage,Service" singleton="false">
+	</object>
+	<!--角色权限-->
+	<object id="Service.RolePermission" type="Service.ServiceImp.RolePermissionManage,Service" singleton="false">
+	</object>
+	<!--用户角色-->
+	<object id="Service.UserRole" type="Service.ServiceImp.UserRoleManage,Service" singleton="false">
+	</object>
+	<!--系统管理end-->
+</objects>

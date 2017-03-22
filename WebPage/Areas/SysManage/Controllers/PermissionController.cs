@@ -1,0 +1,124 @@
+﻿using Common;
+using Domain;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+using WebPage.Models;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class PermissionController : Controller
+	{
+		IPermissionManage PermissionManage { get; set; }
+		IModuleManage ModuleManage { get; set; }
+		IRolePermissionManage RolePermissionManage { get; set; }
+		// GET: SysManage/Permission
+		public ActionResult Index()
+		{
+			//模块下拉框
+			var list = this.ModuleManage.LoadAll(m => m.ModulePath != "" || m.ModulePath != null);
+			StringBuilder builder = new StringBuilder("<option value=''>请选择</option>");
+			foreach (var item in list)
+			{
+				builder.Append("<option value='").Append(item.Id).Append("'>").Append(item.Name).Append("</option>");
+			}
+			ViewData["ParentList"] = builder.ToString();
+			return View();
+		}
+		/// <summary>
+		/// 数据查询
+		/// </summary>
+		/// <returns></returns>
+		public string GetList()
+		{
+			var result = this.PermissionManage.LoadAll(null).Select(m => new
+			{
+				m.Id,
+				m.ModuleId,
+				m.PermissionName,
+				m.PermissionCode,
+				m.IsAvailable
+			});
+			return JsonHelper.Serialize(result);
+		}
+		/// <summary>
+		/// 新增或者编辑
+		/// </summary>
+		/// <param name="module"></param>
+		/// <returns></returns>
+		public int SaveOrUpdate(SYS_PERMISSION module)
+		{
+			if (this.PermissionManage.SaveOrUpdate(module))
+				return 1;
+			return 0;
+		}
+		/// <summary>
+		/// delete module by listid created by Sean.He 2016-12-13 18:40:06
+		/// </summary>
+		/// <param name="entityList"></param>
+		/// <returns></returns>
+		[HttpPost]
+		public int Delete(List<SYS_PERMISSION> entityList)
+		{
+			var ids = entityList.Select(m => m.Id).ToList();
+			return this.PermissionManage.DeleteByIds(ids);
+		}
+		/// <summary>
+		/// 权限分配
+		/// </summary>
+		/// <returns></returns>
+		public ActionResult AssignPermission()
+		{
+			var roleId = Convert.ToInt32(Request.QueryString["RoleId"]);
+			ViewData["RoleId"] = roleId;
+			int.TryParse(Request.QueryString["RoleId"], out roleId);
+			//获取系统
+			var moduleList = CommonFuction.FormartModuleList(this.ModuleManage.LoadListAll(null));//所有模块
+			ViewData["ModuleList"] = moduleList;
+			var id = moduleList.Select(m => m.Id);
+			var permissionList = this.PermissionManage.LoadListAll(m => id.Any(p => p == m.ModuleId));
+			ViewData["PermissionList"] = permissionList;
+			///获得角色
+			var rolePermission = this.RolePermissionManage.LoadListAll(m => m.RoleId == roleId);
+			ViewData["selectper"] = rolePermission;
+			return View();
+		}
+		/// <summary>
+		/// 权限更新
+		/// </summary>
+		/// <param name="roleId"></param>
+		/// <param name="perid"></param>
+		/// <returns></returns>
+		[HttpPost]
+		public int SaveAllocation(int roleId, string perid)
+		{
+			try
+			{
+				if (roleId == 0)
+					return 0;
+				//删除角色所有权限
+				this.RolePermissionManage.Delete(m => m.RoleId == roleId);
+				if (String.IsNullOrEmpty(perid))
+					return 1;
+				perid = perid.TrimEnd(',');
+				List<int> permissionIds = perid.Split(',').Select(m => int.Parse(m)).ToList();
+				List<SYS_ROLE_PERMISSION> rolePermissionList = new List<SYS_ROLE_PERMISSION>();
+				foreach (var item in permissionIds)
+				{
+					var list = new SYS_ROLE_PERMISSION() { RoleId = roleId, PermissionId = item };
+					rolePermissionList.Add(list);
+				}
+				this.RolePermissionManage.SaveList(rolePermissionList);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+			return 1;
+		}
+	}
+}

@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WebPage.Areas.SysManage.Models
+{
+	/// <summary>
+	/// 菜单栏 一级菜单
+	/// </summary>
+	public class MenuModule
+	{
+		public string Id { get; set; }
+		public List<Menu> Menu { get; set; }
+		public MenuModule()
+		{
+			this.Menu = new List<Menu>();
+		}
+	}
+	/// <summary>
+	/// 二级菜单
+	/// </summary>
+	public class Menu
+	{
+		public string Text { get; set; }
+		public List<Items> Items { get; set; }
+		public Menu()
+		{
+			this.Items = new List<Items>();
+		}
+	}
+	/// <summary>
+	/// 三级菜单
+	/// </summary>
+	public class Items
+	{
+		public string Id { get; set; }
+		public string Text { get; set; }
+		public string Href { get; set; }
+	}
+}

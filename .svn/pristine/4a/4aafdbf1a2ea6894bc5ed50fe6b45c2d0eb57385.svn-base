@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Domain.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="SYS_MODULE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParentId" Type="int" Nullable="false" />
+          <Property Name="ModulePath" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsShow" Type="int" />
+          <Property Name="ShowOrder" Type="int" />
+        </EntityType>
+        <EntityType Name="SYS_PERMISSION">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ModuleId" Type="int" Nullable="false" />
+          <Property Name="PermissionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="PermissionName" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsAvailable" Type="int" />
+        </EntityType>
+        <EntityType Name="SYS_ROLE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsAvailable" Type="int" />
+        </EntityType>
+        <EntityType Name="SYS_ROLE_PERMISSION">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="int" />
+          <Property Name="PermissionId" Type="int" />
+        </EntityType>
+        <EntityType Name="SYS_USER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Account" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="200" />
+          <Property Name="Enabled" Type="int" />
+        </EntityType>
+        <Association Name="module_fk1">
+          <End Role="SYS_MODULE" Type="Self.SYS_MODULE" Multiplicity="1" />
+          <End Role="SYS_PERMISSION" Type="Self.SYS_PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SYS_MODULE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SYS_PERMISSION">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DomainStoreContainer">
+          <EntitySet Name="SYS_MODULE" EntityType="Self.SYS_MODULE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_PERMISSION" EntityType="Self.SYS_PERMISSION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_ROLE" EntityType="Self.SYS_ROLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_ROLE_PERMISSION" EntityType="Self.SYS_ROLE_PERMISSION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SYS_USER" EntityType="Self.SYS_USER" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="module_fk1" Association="Self.module_fk1">
+            <End Role="SYS_MODULE" EntitySet="SYS_MODULE" />
+            <End Role="SYS_PERMISSION" EntitySet="SYS_PERMISSION" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Domain" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="SYS_USER" EntityType="Domain.SYS_USER" />
+          <EntitySet Name="SYS_MODULE" EntityType="Domain.SYS_MODULE" />
+          <EntitySet Name="SYS_PERMISSION" EntityType="Domain.SYS_PERMISSION" />
+          <AssociationSet Name="module_fk1" Association="Domain.module_fk1">
+            <End Role="SYS_MODULE" EntitySet="SYS_MODULE" />
+            <End Role="SYS_PERMISSION" EntitySet="SYS_PERMISSION" />
+          </AssociationSet>
+          <EntitySet Name="SYS_ROLE" EntityType="Domain.SYS_ROLE" />
+          <EntitySet Name="SYS_ROLE_PERMISSION" EntityType="Domain.SYS_ROLE_PERMISSION" />
+        </EntityContainer>
+        <EntityType Name="SYS_USER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Account" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Enabled" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SYS_MODULE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Alias" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ParentId" Type="Int32" Nullable="false" />
+          <Property Name="ModulePath" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsShow" Type="Int32" />
+          <Property Name="ShowOrder" Type="Int32" />
+          <NavigationProperty Name="SYS_PERMISSION" Relationship="Domain.module_fk1" FromRole="SYS_MODULE" ToRole="SYS_PERMISSION" />
+        </EntityType>
+        <EntityType Name="SYS_PERMISSION">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModuleId" Type="Int32" Nullable="false" />
+          <Property Name="PermissionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsAvailable" Type="Int32" />
+          <NavigationProperty Name="SYS_MODULE" Relationship="Domain.module_fk1" FromRole="SYS_PERMISSION" ToRole="SYS_MODULE" />
+        </EntityType>
+        <Association Name="module_fk1">
+          <End Type="Domain.SYS_MODULE" Role="SYS_MODULE" Multiplicity="1" />
+          <End Type="Domain.SYS_PERMISSION" Role="SYS_PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SYS_MODULE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SYS_PERMISSION">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SYS_ROLE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsAvailable" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SYS_ROLE_PERMISSION">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int32" />
+          <Property Name="PermissionId" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DomainStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="SYS_USER">
+            <EntityTypeMapping TypeName="Domain.SYS_USER">
+              <MappingFragment StoreEntitySet="SYS_USER">
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_MODULE">
+            <EntityTypeMapping TypeName="Domain.SYS_MODULE">
+              <MappingFragment StoreEntitySet="SYS_MODULE">
+                <ScalarProperty Name="ShowOrder" ColumnName="ShowOrder" />
+                <ScalarProperty Name="IsShow" ColumnName="IsShow" />
+                <ScalarProperty Name="ModulePath" ColumnName="ModulePath" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_PERMISSION">
+            <EntityTypeMapping TypeName="Domain.SYS_PERMISSION">
+              <MappingFragment StoreEntitySet="SYS_PERMISSION">
+                <ScalarProperty Name="IsAvailable" ColumnName="IsAvailable" />
+                <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+                <ScalarProperty Name="PermissionCode" ColumnName="PermissionCode" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_ROLE">
+            <EntityTypeMapping TypeName="Domain.SYS_ROLE">
+              <MappingFragment StoreEntitySet="SYS_ROLE">
+                <ScalarProperty Name="IsAvailable" ColumnName="IsAvailable" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SYS_ROLE_PERMISSION">
+            <EntityTypeMapping TypeName="Domain.SYS_ROLE_PERMISSION">
+              <MappingFragment StoreEntitySet="SYS_ROLE_PERMISSION">
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

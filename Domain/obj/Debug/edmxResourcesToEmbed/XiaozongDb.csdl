@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Domain" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="SYS_USER" EntityType="Domain.SYS_USER" />
+    <EntitySet Name="SYS_MODULE" EntityType="Domain.SYS_MODULE" />
+    <EntitySet Name="SYS_PERMISSION" EntityType="Domain.SYS_PERMISSION" />
+    <AssociationSet Name="module_fk1" Association="Domain.module_fk1">
+      <End Role="SYS_MODULE" EntitySet="SYS_MODULE" />
+      <End Role="SYS_PERMISSION" EntitySet="SYS_PERMISSION" />
+    </AssociationSet>
+    <EntitySet Name="SYS_ROLE" EntityType="Domain.SYS_ROLE" />
+    <EntitySet Name="SYS_ROLE_PERMISSION" EntityType="Domain.SYS_ROLE_PERMISSION" />
+    <EntitySet Name="SYS_USER_ROLE" EntityType="Domain.SYS_USER_ROLE" />
+  </EntityContainer>
+  <EntityType Name="SYS_USER">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Account" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Enabled" Type="Int32" />
+  </EntityType>
+  <EntityType Name="SYS_MODULE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Alias" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ParentId" Type="Int32" Nullable="false" />
+    <Property Name="ModulePath" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsShow" Type="Int32" />
+    <Property Name="ShowOrder" Type="Int32" />
+    <NavigationProperty Name="SYS_PERMISSION" Relationship="Domain.module_fk1" FromRole="SYS_MODULE" ToRole="SYS_PERMISSION" />
+  </EntityType>
+  <EntityType Name="SYS_PERMISSION">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ModuleId" Type="Int32" Nullable="false" />
+    <Property Name="PermissionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsAvailable" Type="Int32" />
+    <NavigationProperty Name="SYS_MODULE" Relationship="Domain.module_fk1" FromRole="SYS_PERMISSION" ToRole="SYS_MODULE" />
+  </EntityType>
+  <Association Name="module_fk1">
+    <End Type="Domain.SYS_MODULE" Role="SYS_MODULE" Multiplicity="1" />
+    <End Type="Domain.SYS_PERMISSION" Role="SYS_PERMISSION" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SYS_MODULE">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SYS_PERMISSION">
+        <PropertyRef Name="ModuleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="SYS_ROLE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsAvailable" Type="Int32" />
+  </EntityType>
+  <EntityType Name="SYS_ROLE_PERMISSION">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleId" Type="Int32" />
+    <Property Name="PermissionId" Type="Int32" />
+  </EntityType>
+  <EntityType Name="SYS_USER_ROLE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+  </EntityType>
+</Schema>

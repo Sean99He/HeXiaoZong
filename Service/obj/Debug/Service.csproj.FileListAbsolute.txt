@@ -1,0 +1,30 @@
+E:\hexiaozong\Service\bin\Debug\Service.dll
+E:\hexiaozong\Service\bin\Debug\Service.pdb
+E:\hexiaozong\Service\obj\Debug\Service.csprojResolveAssemblyReference.cache
+E:\hexiaozong\Service\obj\Debug\Service.dll
+E:\hexiaozong\Service\obj\Debug\Service.pdb
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Service.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Service.pdb
+D:\virtualsvn server\hexiaozong\Service\obj\Debug\Service.dll
+D:\virtualsvn server\hexiaozong\Service\obj\Debug\Service.pdb
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Domain.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\EntityFramework.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\EntityFramework.SqlServer.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Domain.pdb
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\EntityFramework.xml
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\EntityFramework.SqlServer.xml
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\zh-Hans\EntityFramework.resources.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll
+D:\virtualsvn server\hexiaozong\Service\obj\Debug\Service.csprojResolveAssemblyReference.cache
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Common.dll
+D:\virtualsvn server\hexiaozong\Service\bin\Debug\Common.pdb
+E:\HeXiaoZong\Service\bin\Debug\Common.dll
+E:\HeXiaoZong\Service\bin\Debug\Domain.dll
+E:\HeXiaoZong\Service\bin\Debug\EntityFramework.dll
+E:\HeXiaoZong\Service\bin\Debug\EntityFramework.SqlServer.dll
+E:\HeXiaoZong\Service\bin\Debug\Common.pdb
+E:\HeXiaoZong\Service\bin\Debug\Domain.pdb
+E:\HeXiaoZong\Service\bin\Debug\EntityFramework.xml
+E:\HeXiaoZong\Service\bin\Debug\EntityFramework.SqlServer.xml
+E:\HeXiaoZong\Service\bin\Debug\zh-Hans\EntityFramework.resources.dll
+E:\HeXiaoZong\Service\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll

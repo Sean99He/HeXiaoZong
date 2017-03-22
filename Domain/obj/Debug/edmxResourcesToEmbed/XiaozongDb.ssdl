@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Domain.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="SYS_MODULE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Alias" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ParentId" Type="int" Nullable="false" />
+    <Property Name="ModulePath" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsShow" Type="int" />
+    <Property Name="ShowOrder" Type="int" />
+  </EntityType>
+  <EntityType Name="SYS_PERMISSION">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ModuleId" Type="int" Nullable="false" />
+    <Property Name="PermissionCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="PermissionName" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsAvailable" Type="int" />
+  </EntityType>
+  <EntityType Name="SYS_ROLE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsAvailable" Type="int" />
+  </EntityType>
+  <EntityType Name="SYS_ROLE_PERMISSION">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleId" Type="int" />
+    <Property Name="PermissionId" Type="int" />
+  </EntityType>
+  <EntityType Name="SYS_USER">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="Account" Type="nvarchar" MaxLength="50" />
+    <Property Name="Password" Type="nvarchar" MaxLength="200" />
+    <Property Name="Enabled" Type="int" />
+  </EntityType>
+  <EntityType Name="SYS_USER_ROLE">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RoleId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="module_fk1">
+    <End Role="SYS_MODULE" Type="Self.SYS_MODULE" Multiplicity="1" />
+    <End Role="SYS_PERMISSION" Type="Self.SYS_PERMISSION" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SYS_MODULE">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SYS_PERMISSION">
+        <PropertyRef Name="ModuleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DomainStoreContainer">
+    <EntitySet Name="SYS_MODULE" EntityType="Self.SYS_MODULE" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SYS_PERMISSION" EntityType="Self.SYS_PERMISSION" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SYS_ROLE" EntityType="Self.SYS_ROLE" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SYS_ROLE_PERMISSION" EntityType="Self.SYS_ROLE_PERMISSION" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SYS_USER" EntityType="Self.SYS_USER" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SYS_USER_ROLE" EntityType="Self.SYS_USER_ROLE" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="module_fk1" Association="Self.module_fk1">
+      <End Role="SYS_MODULE" EntitySet="SYS_MODULE" />
+      <End Role="SYS_PERMISSION" EntitySet="SYS_PERMISSION" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

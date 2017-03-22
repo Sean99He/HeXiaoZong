@@ -1,0 +1,17 @@
+﻿using Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service.IService
+{
+	/// <summary>
+	/// 登录用户管理基类接口
+	/// </summary>
+	public interface IUserManage : IRepository<sys_user>
+	{
+
+	}
+}

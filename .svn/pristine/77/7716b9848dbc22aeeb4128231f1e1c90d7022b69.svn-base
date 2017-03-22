@@ -1,0 +1,45 @@
+﻿using Common;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebPage.Areas.SysManage.Models;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class HomeController : Controller
+	{
+		IModuleManage ModuleManage { get; set; }
+		// GET: SysManage/Home
+		public ActionResult Index()
+		{
+			//一级菜单栏
+			var menuModule = new MenuModule();
+			foreach (var item in this.ModuleManage.LoadAll(m => m.ParentId == 0))
+			{
+				menuModule.Id = item.Alias;
+				foreach (var item2 in this.ModuleManage.LoadAll(m => m.ParentId == item.Id))
+				{
+					//二级菜单
+					var menu = new Menu();
+					menu.Text = item2.Name;
+					foreach (var item3 in this.ModuleManage.LoadAll(m => m.ParentId == item2.Id))
+					{
+						//三级菜单
+						var items = new Items();
+						items.Id = item3.Alias;
+						items.Text = item3.Name;
+						items.Href = item3.ModulePath;
+						menu.Items.Add(items);
+					}
+					menuModule.Menu.Add(menu);
+				}
+			}
+			var result = JsonHelper.Serialize(menuModule);
+			ViewData["Menu"] = result;
+			return View();
+		}
+	}
+}

@@ -1,0 +1,44 @@
+﻿using Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service
+{
+	/// <summary>
+	/// 用户登陆类 Created by Sean.He 2017-01-09 16:27:22
+	/// </summary>
+	public class Account
+	{
+		/// <summary>
+		/// 用户Id
+		/// </summary>
+		public int Id { get; set; }
+		/// <summary>
+		/// 用户姓名
+		/// </summary>
+		public string Name { get; set; }
+		/// <summary>
+		/// 登录名
+		/// </summary>
+		public string LoginName { get; set; }
+		/// <summary>
+		/// 登陆密码
+		/// </summary>
+		public string PassWord { get; set; }
+		/// <summary>
+		/// 是否为管理员
+		/// </summary>
+		public bool IsAdmin { get; set; }
+		/// <summary>
+		/// 权限集合
+		/// </summary>
+		public List<SYS_PERMISSION> Permissions { get; set; }
+		/// <summary>
+		/// 可操作模块
+		/// </summary>
+		public List<SYS_MODULE> Modules { get; set; }
+	}
+}

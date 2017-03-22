@@ -1,0 +1,17 @@
+﻿using Domain;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Service.ServiceImp
+{
+	/// <summary>
+	/// 登录基类
+	/// </summary>
+	public class UserManage : Repository<sys_user>, IUserManage
+	{
+	}
+}

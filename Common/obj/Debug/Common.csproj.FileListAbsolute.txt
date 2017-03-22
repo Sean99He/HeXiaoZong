@@ -1,0 +1,10 @@
+E:\hexiaozong\Common\bin\Debug\Common.dll
+E:\hexiaozong\Common\bin\Debug\Common.pdb
+E:\hexiaozong\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
+E:\hexiaozong\Common\obj\Debug\Common.dll
+E:\hexiaozong\Common\obj\Debug\Common.pdb
+D:\virtualsvn server\hexiaozong\Common\bin\Debug\Common.dll
+D:\virtualsvn server\hexiaozong\Common\bin\Debug\Common.pdb
+D:\virtualsvn server\hexiaozong\Common\obj\Debug\Common.dll
+D:\virtualsvn server\hexiaozong\Common\obj\Debug\Common.pdb
+D:\virtualsvn server\hexiaozong\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache

@@ -1,0 +1,208 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout_Xiaozong.cshtml";
+}
+<div class="container">
+	<div class="form-inline definewidth m20">
+		用户名称：
+		<input type="text" name="name" id="txtName" class="abc input-default" placeholder="" value="">&nbsp;&nbsp;
+		<button id="btnSearch" class="btn btn-primary">查询</button>
+	</div>
+	@using (@Html.BeginForm("ImportExcel", "User", FormMethod.Post, new { enctype = "multipart/form-data", id = "fmImportExcel" }))
+	{
+		@Html.ActionLink("下载模版", "GetFile")
+		<input name="file" type="file" id="file" />
+	}
+	<div id="grid"></div>
+	<div id="content" class="hide">
+		<form id="J_Form" class="form-horizontal">
+			<div class="row">
+				<div class="control-group span8">
+					<label class="control-label"><s>*</s>用户姓名：</label>
+					<div class="controls">
+						<input type="hidden" name="Id" />
+						<input name="Name" type="text" data-rules="{required:true}" class="input-normal control-text">
+					</div>
+				</div>
+				<div class="control-group span8">
+					<label class="control-label"><s>*</s>用户账户：</label>
+					<div class="controls">
+						<input name="Account" type="text" data-rules="{required:true}" class="input-normal control-text">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="control-group span8">
+					<label class="control-label"><s>*</s>是否可用：</label>
+					<div class="controls">
+						<select data-rules="{required:true}" name="Enabled" class="input-normal">
+							<option value="">请选择</option>
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div>
+<script type="text/javascript">
+	$(function () {
+		load();
+	})
+	BUI.use('common/page');
+	//加载
+	function load() {
+		BUI.use(['bui/grid', 'bui/data'], function (Grid, Data) {
+			var columns = [{ title: '用户姓名', dataIndex: 'Name', width: 200 },
+					{ title: '用户账户', dataIndex: 'Account', width: 200 },
+					{ title: '是否可用', dataIndex: 'Enabled' },
+					{
+						title: '操作', renderer: function () {
+							return '<span class="grid-command btn-edit">编辑</span>';
+						}
+					}
+			],
+			  store = new Data.Store({
+			  	url: "../User/GetList",
+			  	autoLoad: true,
+			  	pageSize: 10,
+			  	params: {
+			  		name: $("#txtName").val(),
+			  	},
+			  }),
+			  editing = new Grid.Plugins.DialogEditing({
+			  	contentId: 'content',
+			  	triggerCls: 'btn-edit',
+			  	editor: {
+			  		success: function () {
+			  			var edtor = this,
+								form = edtor.get('form'),
+								editType = editing.get('editType');
+			  			url = '../User/SaveOrUpdate';
+			  			//检验
+			  			form.valid();
+			  			if (form.isValid()) {
+			  				form.ajaxSubmit({ //表单异步提交
+			  					url: url,
+			  					success: function (data) {
+			  						record = form.serializeToObject();
+			  						if (data == 0) {
+			  							BUI.Message.Alert('操作失败');
+			  						} else {
+			  							if (editType == 'add') {
+			  								alert('添加成功');
+			  							} else {
+			  								alert('编辑成功');
+			  							}
+			  							this.window.location = "/SysManage/User";
+			  							edtor.accept();
+			  						}
+			  					},
+			  					error: function () {
+			  						BUI.Message.Alert(data.Message, 'error');
+			  					}
+			  				});
+			  			}
+			  		}
+			  	}
+			  }),
+			  grid = new Grid.Grid({
+			  	render: '#grid',
+			  	columns: columns,
+			  	width: 700,
+			  	forceFit: true,
+			  	store: store,
+			  	bbar: {
+			  		pagingBar: true
+			  	},
+			  	plugins: [Grid.Plugins.CheckSelection, editing],
+			  	tbar: {
+			  		items: [{
+			  			btnCls: 'button button-small',
+			  			text: '<i class="icon-plus"></i><div class="div_Operate"><a action="add">添加</a></div>',
+			  			listeners: {
+			  				'click': addFunction
+			  			}
+			  		},
+					{
+						btnCls: 'button button-small',
+						text: '<i class="icon-remove"></i><div class="div_Operate"><a action="del">删除</a></div>',
+						listeners: {
+							'click': delFunction
+						}
+					},
+					{
+						btnCls: 'button button-small',
+						text: '<i class="icon-remove"></i>重置密码',
+						listeners: {
+							'click': resetPassword
+						}
+					},
+			  		{
+			  			btnCls: 'button button-small',
+			  			text: '<i class="icon-remove"></i>导出',
+			  			listeners: {
+			  				'click': exportExcel
+			  			}
+			  		},
+					{
+						btnCls: 'button button-small',
+						text: '<i class="icon-remove"></i>导入',
+						listeners: {
+							'click': ImportExcel
+						}
+					},
+			  		{
+			  			btnCls: 'button button-small',
+			  			text: '<i class="icon-remove"></i>角色分配',
+			  			listeners: {
+			  				'click': assignUserRole
+			  			}
+			  		}]
+			  	}
+			  });
+			grid.render();
+			function addFunction() {
+				editing.add();
+			}
+			function delFunction() {
+				var selections = grid.getSelection();
+				$.post("../User/Delete", { entityList: selections }, function (result) {
+					if (result > 0)
+						alert('删除成功');
+				});
+				store.remove(selections);
+			}
+			function resetPassword() {
+				var selections = grid.getSelection();
+				$.post("../User/ResetPassword", { entityList: selections }, function (result) {
+					if (result > 0) {
+						alert('重置成功');
+						window.location = "/SysManage/User";
+					}
+				});
+			}
+			function exportExcel() {
+				window.location = "/SysManage/User/ExportExcel";
+			}
+			function ImportExcel() {
+				$("#fmImportExcel").submit();
+			}
+			function assignUserRole() {
+				var selections = grid.getSelection();
+				if (selections.length != 1) {
+					alert('请选择一条数据');
+					return;
+				}
+				$('#myModal').load('/SysManage/Role/AssignUserRole?userId=' + selections[0].Id);
+				$('#myModal').modal('show');
+			}
+		});
+	}
+	//查询功能
+	$("#btnSearch").on('click', function () {
+		$("#grid").html(''); load();
+	});
+</script>

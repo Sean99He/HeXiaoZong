@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+
+namespace Common
+{
+	public class JsonHelper
+	{
+		/// <summary>
+		/// 对象序列化 created by Sean 2016-11-29 18:59:55
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public static string Serialize(object obj)
+		{
+			JavaScriptSerializer ser = new JavaScriptSerializer();
+			return ser.Serialize(obj);
+		}
+		/// <summary>
+		/// json转换为动态类型
+		/// </summary>
+		/// <param name="json"></param>
+		/// <returns></returns>
+		public static dynamic ConvertJson(string json)
+		{
+			JavaScriptSerializer ser = new JavaScriptSerializer();
+			return ser.Deserialize(json, typeof(object)) as dynamic;
+		}
+	}
+}

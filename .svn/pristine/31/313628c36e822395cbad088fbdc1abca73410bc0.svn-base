@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Encrypt
+{
+	/// <summary>
+	/// md5加密 created by Sean 2016-11-30 09:59:34
+	/// </summary>
+	public class MD5Helper
+	{
+		/// <summary>
+		/// 密码加密
+		/// </summary>
+		/// <param name="password"></param>
+		/// <returns></returns>
+		public static string MD5Encrypt(string password)
+		{
+			MD5 md5 = new MD5CryptoServiceProvider();
+			byte[] byteValue = Encoding.Default.GetBytes(password);
+			byte[] result = md5.ComputeHash(byteValue);
+			return Encoding.Default.GetString(result);
+		}
+	}
+}

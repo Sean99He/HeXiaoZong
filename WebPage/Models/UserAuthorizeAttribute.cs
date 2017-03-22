@@ -1,0 +1,92 @@
+﻿using Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http.Controllers;
+using System.Web.Mvc;
+using WebPage.Controllers;
+
+namespace WebPage.Models
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	public class UserAuthorizeAttribute : AuthorizeAttribute
+	{
+		/// <summary>
+		/// 模块别名
+		/// </summary>
+		public string ModuleAlias { get; set; }
+		/// <summary>
+		/// 操作类型
+		/// </summary>
+		public string OperateAction { get; set; }
+		/// <summary>
+		/// 基类实例化
+		/// </summary>
+		public BaseController baseController = new BaseController();
+		/// <summary>
+		/// 权限认证
+		/// </summary>
+		/// <param name="filterContext"></param>
+		public override void OnAuthorization(AuthorizationContext filterContext)
+		{
+			//判断是模块是否存在
+			if (string.IsNullOrEmpty(this.ModuleAlias))
+			{
+				filterContext.HttpContext.Response.Write("<script>alert('你没有权限执行该操作！');</script>");
+				filterContext.HttpContext.Response.End();
+				filterContext.Result = new EmptyResult();
+				return;
+			}
+			//判断用户是否存在
+			if (this.baseController.CurrentUser == null)
+			{
+				filterContext.HttpContext.Response.Write("<script>alert('登录已过期，请重新登录！');window.top.location='/';</script>");
+				filterContext.HttpContext.Response.End();
+				filterContext.Result = new EmptyResult();
+				return;
+			}
+			//判断用户是否有按钮的访问权限
+			var alias = this.ModuleAlias.ToUpper();
+			var moduleId = this.baseController.CurrentUser.Modules.Where(m => m.Alias.ToUpper() == alias).Select(p => p.Id).FirstOrDefault();
+			if (!IsAllowed(this.baseController.CurrentUser, moduleId, this.OperateAction))
+			{
+				filterContext.HttpContext.Response.Write("<script>alert('你没有权限执行该操作！');</script>");
+				filterContext.HttpContext.Response.End();
+				filterContext.Result = new EmptyResult();
+				return;
+			}
+			//当前页面用户的按钮权限集合
+			filterContext.Controller.ViewData["PermissionList"] = GetUserPermissonAction(this.baseController.CurrentUser, moduleId);
+		}
+		/// <summary>
+		/// 判断用户是否有按钮的操作权限
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="moduleId"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		bool IsAllowed(Account user, int moduleId, string action)
+		{
+			if (user == null || user.Id < 0 || moduleId == 0 || string.IsNullOrEmpty(action))
+				return false;
+			var userPermisison = user.Permissions.Where(m => m.ModuleId == moduleId).Select(m => m.PermissionCode.ToUpper()).ToList();
+			if (userPermisison.Contains(action.ToUpper()))
+				return true;
+			return false;
+		}
+		/// <summary>
+		/// 用户全部按钮权限
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="moduleId"></param>
+		/// <returns></returns>
+		string GetUserPermissonAction(Account user, int moduleId)
+		{
+			var permission = user.Permissions.Where(m => m.ModuleId == moduleId).Select(m => new { m.PermissionCode });
+			return Common.JsonHelper.Serialize(permission);
+		}
+	}
+}

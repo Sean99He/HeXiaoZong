@@ -1,0 +1,46 @@
+﻿using Common;
+using Service.IService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+
+namespace WebPage.Areas.SysManage.Controllers
+{
+	public class PermissionController : Controller
+	{
+		IPermissionManage PermissionManage { get; set; }
+		IModuleManage ModuleManage { get; set; }
+		// GET: SysManage/Permission
+		public ActionResult Index()
+		{
+			//模块下拉框
+			var list = this.ModuleManage.LoadAll(m => m.ModulePath != "" || m.ModulePath != null);
+			StringBuilder builder = new StringBuilder("<option value=''>请选择</option>");
+			foreach (var item in list)
+			{
+				builder.Append("<option value='").Append(item.Id).Append("'>").Append(item.Name).Append("</option>");
+			}
+			ViewData["ParentList"] = builder.ToString();
+			return View();
+		}
+		/// <summary>
+		/// 数据查询
+		/// </summary>
+		/// <returns></returns>
+		public string GetList()
+		{
+			var result = this.PermissionManage.LoadAll(null).Select(m => new
+			{
+				m.Id,
+				m.ModuleId,
+				m.PermissionName,
+				m.PermissionCode,
+				m.IsAvailable
+			});
+			return JsonHelper.Serialize(result);
+		}
+	}
+}
